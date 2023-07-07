@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<context:property-placeholder location="classpath:config/*.properties"/>
+	
+	<!-- datasource connection pool -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<!-- value안에 db.properties내부의 값 가져옴 -->
+		<property name="driverClassName" value="${jdbcDriver}" />
+		<property name="jdbcUrl" value="${jdbcUrl}" />
+		<property name="username" value="${user}" />
+		<property name="password" value="${pwd}" />
+	</bean>
+	
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" 
+	destroy-method="close">
+		<!-- 생성자 주입.이미 생성된 bean을 주입 -->
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	
+	<!-- mybatis SqlSessionFactory -->
+	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 생성자 주입된 걸 다시 setter주입 -->
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+	<!-- mapper scan -->
+	<!-- 루트 패키지 구성할 때 스캔할 때 기능상관없이 mapper라는 이름의 패키지 있으면 기능 상관없이 다 읽어들이라고 -->
+	<!-- mybatis와 관련된 mapper부분은 여기를 수정해야함 -->
+	<mybatis-spring:scan base-package="com.yedam.app.**.mapper" />
+	
+</beans>
