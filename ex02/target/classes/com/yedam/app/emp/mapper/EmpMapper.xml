@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <!-- xml파일 설정안하면 이름이 인터페이스와 100%같아야함 -->
+ <mapper namespace="com.yedam.app.emp.mapper.EmpMapper">
+ <!-- 별칭이 아무것도 없어서 생략할 수 없음. namespace, VO도 풀네임으로 써야함 -->
+ 	<select id="getEmp" resultType ="com.yedam.app.emp.service.EmpVO">
+ 		Select employee_id,
+ 			   first_name,
+ 			   last_name,
+ 			   email,
+ 			   hire_date,
+ 			   job_id,
+ 			   salary
+ 		FROM employees
+ 		WHERE employee_id = #{employee_id}
+ 	</select>
+ </mapper>
