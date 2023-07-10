@@ -1,5 +1,6 @@
 package com.yedam.app;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public class EmpMapperClient {
 	
 	
 	//전체 조회 테스트
-	@Test
+	//@Test
 	public void selectAllEmp() {
 		List<EmpVO> empList = empMapper.selectEmpAllList();
 		assertTrue(!empList.isEmpty());	//isEmpty -> 값이 비어있을 때 true. 데이터가 넘어온다면 List가 비어있지 않을 것. assertTrue는 true를 원해서 원하는 방향으로 반전시킨 것
@@ -36,4 +37,18 @@ public class EmpMapperClient {
 	
 		
 	}
+	
+	//단건 조회 테스트
+	@Test
+	public void selectEmpInfo() {
+		//조회할 번호를 객체로 넘김
+		EmpVO empVO = new EmpVO();
+		empVO.setEmployeeId(100);
+		
+		//empMapper를 실행시켰을 때 결과를 별도의 변수에 담음
+		EmpVO findVO = empMapper.selectEmpInfo(empVO);
+		assertEquals(findVO.getLastName(), "King");	//정상적으로 데이터가 왔다면 LastName이 King이여야함
+	}
+	
+	//Run as -> run configuration : 실행시킬 때 설정 변경(하나만 골라서 실행시키고 싶을 때, annotation을 지우는 것도 하나의 방법이지만 이 방법도 있다)
 }
