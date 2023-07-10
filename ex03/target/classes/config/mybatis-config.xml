@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<settings>
+		<!-- Java : firstName -> DB : first_name -->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<!-- 결과로 넘어온 Null 에 대한 처리. null(디폴트), varchar(문자로 인식) -->
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	<typeAliases>
+	<!--  1. 개별적 진행 2. 패키지 사용(*못씀. 전체경로에 대해서 full로 해줘야 함) -->
+		<package name="com.yedam.app"/>
+	</typeAliases>
+	<typeHandlers>
+		<!-- 기본적으로 날짜와 관련된 걸 사용. 필수로 넣어야되는 건 없음 -->
+		<!-- java.util.Date 로 변환 -->
+		<typeHandler javaType="java.sql.Date" handler="org.apache.ibatis.type.DateTypeHandler"/>
+		<!-- handler는 개인적으로 찾아야 함. 패키지는 MYBATIS홈페이지에서 밑에 Typehandler쪽을 복사(org.apache.ibatis.type.TypeHandler => 얘는 인터페이스임. 이름만 위에서 골라옴 -->
+	</typeHandlers>
+</configuration>
