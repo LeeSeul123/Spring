@@ -25,7 +25,7 @@
 			   manager_id,
 			   department_id
 		FROM employees
-	ORDER BY employee_id
+	ORDER BY employee_id DESC
 	<!-- 전체조회 할때는 무조건 ORDER BY넣어줌(보통 primary key로) -->
 	</select>
 	<!-- 단건조회 -->
@@ -110,7 +110,7 @@
 		<update id="updateEmpSal">
 			UPDATE employees
 			SET salary = salary * (1 + #{raise} / 100)
-			WHERE employee_id = #{empId}
+			WHERE employee_id = #{emp.employeeId}
 			<!-- @Param의 값이 객체인 경우 WHERE employee_id = #{emp.employeeId}로 사용 -->
 		</update>
 		

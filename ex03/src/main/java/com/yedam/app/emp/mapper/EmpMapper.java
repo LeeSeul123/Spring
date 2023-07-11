@@ -23,7 +23,7 @@ public interface EmpMapper {
 	//매개변수에 값이 2개 이상 -> 값에 대해서 쿼리문에서 제대로 적용X(mybatis에서 2개이상 매개변수 쓸때 @Param쓰는 걸 권장함)
 	//@Param() = mapper에서 사용. xml에서 사용할 이름을 정해달라는 뜻. 인터페이스 매퍼에서만 사용. 둘중에 어느 위치에 들어갈 지 명확하게 하기 위해서 @Param사용.
 	//@Param뒤에 객체가 들어갈 경우 이름.필드명으로 접근
-	public int updateEmpSal(@Param("empId") int employeeId,@Param("raise") int raise);
+	public int updateEmpSal(@Param("emp") EmpVO empVO,@Param("raise") int raise);
 	
 	
 	//값을 2개 이상 받아올 때 VO가 아니라 @Param을 쓸 수도 있음

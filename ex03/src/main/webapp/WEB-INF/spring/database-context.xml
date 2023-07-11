@@ -3,9 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 	
 	
 	<!-- 어느 위치의 파일을 읽어들이겠습니다. -->
@@ -40,5 +42,15 @@
 	
 	<!-- mapper scan -->
 	<mybatis-spring:scan base-package="com.yedam.app.**.mapper" />
+	
+	<!-- tx에서 transaction manager로 이름이 바뀜 -->
+	<!-- TransactionManager bean 등록 -->
+	<bean id="transactionManager"
+	class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- @Transactional 어노테이션 처리 -->
+	<!-- 컨트롤러에 있는 annotation읽어들이는 annotation-driven/트랜잭션 매니저가 관리하는 annotation읽어들임 -> 범위는 따로 지정X. 어노테이션 서비스 밑에서만 존재해서?. component 를 기능에따라 service, repository로 나눔. @service붙은 애들에 대해서만 읽어들여서 범위지정할 필요없음 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
 
 </beans>
