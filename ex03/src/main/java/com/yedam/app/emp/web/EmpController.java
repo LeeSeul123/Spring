@@ -1,10 +1,14 @@
 package com.yedam.app.emp.web;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.yedam.app.emp.service.EmpService;
@@ -84,7 +88,6 @@ public class EmpController {
 		//사용자가 원하든 안원하든 강제로 redirect일어남
 		
 	}
-}
 //또 다른 controller호출 방법 2가지 : 1.redirect 2.(dispatcher) forward
 		//클라이언트가 요청한 건 controller인데 실제로는 페이지가 반환됨 -> controller가 페이지를 호출해서 그걸 넘겨주는 거. 원래는 2개의 단계를 거치는 게 맞음
 		//forward : 서버에서 몇단계를 거치고, 뭘하는 지 클라이언트가 모름. forward는 호출할 때 브라우저가 바뀌지 않음 -> views/emp/empInfo.jsp를 호출하는데 실제 페이지 uri랑 다름. 근데 사용자. request와 response가 여러단계를 거쳐도 알 수 없음. 최초의 request와 response를 그대로 유지(처음 데이터 유지해서 컨트롤러 동작. request의 response내용이 계속 유지됨). 보안상 위험이 있는 내부 처리할 때 forward사용
@@ -103,3 +106,20 @@ public class EmpController {
 		//새로운 컨트롤러를 거쳐 새로운 페이지가도 addFlashAttribute쓰면 값 유지됨
 		//redirect : 경로가 아예달라짐. 최초의 경로 없어지고 강제로 컨트롤러 요청 들어감
 		//데이터 보낼떄 저장방식이 다름
+	
+	
+	//수정은 결과를 데이터로 보냄(페이지를 요청하진 않음)-> getMapping없음
+	//수정 - Process
+	// 1) Client -JSON-> SERVER : @RequestBody /Client가 보내온 데이터가 JSON -> Server
+	// 2) Server -JSON-> Client : @ResponseBody
+	@PostMapping("/empUpdate")
+	//특정 사원에 대한 정보가 필요해서 매개변수로 EmpVO사용 (서비스를 이용해서 데이터를 넘길때도 용이함)
+	
+	//객체 타입으로 데이터를 넘길 때는 페이지를 반환하지 않는다고 알려줘야함(메소드위에)
+	@ResponseBody	//return하는 거에대해서 json으로 변환
+	public Map<String, String> empUpdateProcess(@RequestBody EmpVO empVO){	//json으로 들어오는 변수앞에 선언
+		return empService.updateEmp(empVO);	//받은 거 그대로 넘김
+	}
+	//비동기 통신으로 통신할 때 json으로 받고 json으로 처리하는 형태를 띔
+	
+}

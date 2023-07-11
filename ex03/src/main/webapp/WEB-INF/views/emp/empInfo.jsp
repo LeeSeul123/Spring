@@ -31,6 +31,8 @@
 			<label>salary : <input type="number" name="" value="${empInfo.salary }"></label>
 		</div>
 		<button type="submit">수정</button>
+		<!-- submit은 동기식으로 데이터를 요청해서 사실상 못씀. 수정은 controller에서 json으로 데이터를 주고받게 되어있음(비동기) -->
+		<!-- submit을 제어해서 접근. -->
 		<button type="button">취소</button>
 	</form>
 </body>
