@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -56,7 +57,7 @@ public class EmpController {
 	
 	
 	
-	//등록 - Form
+	//등록 - Form(페이지 불러오는 거)
 	//하나의 기능 -> 하나의 컨트롤러(페이지 만들고 사용자가 입력한 것을 등록하는 작업)
 	//경로자체는 같지만 method를 다르게 해서 처리
 	@GetMapping("/empInsert")
@@ -109,7 +110,7 @@ public class EmpController {
 	
 	
 	//수정은 결과를 데이터로 보냄(페이지를 요청하진 않음)-> getMapping없음
-	//수정 - Process
+	//수정 - Process(비동기라서 등록처럼 페이지를 가져오지않음)
 	// 1) Client -JSON-> SERVER : @RequestBody /Client가 보내온 데이터가 JSON -> Server
 	// 2) Server -JSON-> Client : @ResponseBody
 	@PostMapping("/empUpdate")
@@ -122,4 +123,18 @@ public class EmpController {
 	}
 	//비동기 통신으로 통신할 때 json으로 받고 json으로 처리하는 형태를 띔
 	
+	
+	
+	//단건 삭제 - Process(empList에서 버튼 누르면 개별삭제)
+	@PostMapping(value="/empDelete", produces = "text/plain;charset=UTF-8")   //@ResponseBody로 한글을 돌려 보낼 때 사용(map.get()의 결과가 한글?)
+	@ResponseBody		
+	//삭제는 데이터가 1건 밖에 안들어가서 GET방식을 쓰기도 함. post일수도, delete일수도, get일수도 있음
+	public String empDeleteProcess(@RequestParam("id") int employeeId) { 	//값이 하나만 들어가서 커맨드 객체를 사용하진 않음
+		//@RequestParam(name="id")도 가능
+		//@RequestParam -> 매개변수명이 key가 됨	or @RequestParam("id") -> key가 "id"임. 디폴트로 지정되는 속성이 name임. 만약 required등 다른 속성도 쓰면 name이라고 지정해야함. required, defaultValue속성도 있음
+		//값을 받을 땐 QueryString(@RequestParam), 돌려받을 땐 text값
+		Map<String, String> map = empService.deleteEmp(employeeId);	//남이 만든 걸 호출하는데(기능이 같아서), 내마음에 들지 않아도 상속 대체할 필요X 결과에 대해서는 후에 작업해도됨(지금은 map에서 key로 value만 가져옴)
+		//empList에서 delete할거라서 redirect할 필요없고 결과만 반환시킬 것
+		return map.get("결과");	//페이지가 아니므로 @ResponseBody를 붙인다
+	}
 }
