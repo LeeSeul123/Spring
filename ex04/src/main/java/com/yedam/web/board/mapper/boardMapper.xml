@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yedam.web.board.mapper.BoardMapper">
+	<select id="selectBoardAllList" resultType="BoardVO">
+		SELECT bno,
+			   title,
+			   contents,
+			   writer,
+			   regdate,
+			   updatedate
+		FROM board
+		ORDER BY bno
+	</select>
+	
+	<select id="selectBoard" resultType="BoardVO">
+		SELECT bno,
+			   title,
+			   contents,
+			   writer,
+			   regdate,
+			   updatedate
+		FROM board
+		WHERE bno = #{bno}
+	</select>
+	
+	<insert id="insertBoard" parameterType="BoardVO">
+		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(bno), 100) + 1
+			FROM board
+		</selectKey>
+		
+		INSERT INTO board
+				(
+					bno
+					, title
+					<if test="contents != null and !contents.equals('')">
+					, contents
+					</if>
+					, writer
+					<if test="regdate != null">
+					, regdate
+					</if>
+					<if test="image != null and !image.equals('')">
+					, image
+					</if>
+				)
+				VALUES
+				(
+					#{bno}
+					, #{title}
+					<if test="contents != null and !contents.equals('')">
+					, #{contents}
+					</if>
+					, #{writer}
+					
+					<if test="regdate != null">
+					, #{regdate}
+					</if>
+					<if test="image != null and !image.equals('')">
+					, #{image}
+					</if>
+				)
+					  
+	
+	</insert>
+	
+	<update id="updateBoard" parameterType="BoardVO">
+		UPDATE board
+		<set>
+			<if test="title != null and title.equals('')">
+				title = #{title}
+			</if>
+			<if test="contents != null and contents.equals('')">
+				contents = #{contents}
+			</if>
+			<if test="image != null and image.equals('')">
+				image = #{image}
+			</if>
+			<if test="updateDate == null">
+				updatedate = sysdate
+			</if>
+			<if test="updatedate != null">
+				updatedate = #{updatedate}
+			</if>
+		</set>
+		WHERE bno = #{bno}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FORM board
+		WHERE bno = #{bno}
+	
+	</delete>
+
+</mapper>

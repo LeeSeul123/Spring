@@ -9,6 +9,7 @@
 	</settings>
 	<typeAliases>
 		<package name="com.yedam.web"/>
+		<!-- 얘가 안맞으면 Mapper.xml에서 BoardVO라고 적었을 때 BoardVO를 찾지 못한다고 나옴 -->
 	</typeAliases>
 	<typeHandlers>
 		<typeHandler javaType="java.sql.Date" handler="org.apache.ibatis.type.DateTypeHandler"/>

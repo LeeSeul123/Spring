@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+	
+	
+	<!-- xml로 빈등록 -->
+	<!--  <bean id="xmlTV" class="com.spring.annotation.SamsungTV"/> -->
+	
+	
+	
+	
+	<!-- 어노테이션으로 빈등록과 관계정리 -->
+	<context:component-scan base-package="com.spring">
+		<!-- 스캔 시 필터걸 수 있음 -->
+	
+	</context:component-scan>
+	<!-- basepackage : 루트패키지. 얘 밑에 들어가는 것도 다 검색됨 -->
+	<!-- 경로 지정시 그 밑에 존재하는 모든 component에 대해 읽어들임 -->
+</beans>
