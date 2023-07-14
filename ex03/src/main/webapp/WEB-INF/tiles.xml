@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<!-- template -> 이 파일을 기반으로 생성하겠다 -->
+	<definition name="mainTemplate" template="/WEB-INF/views/tiles/layout.jsp">
+		<!-- layout.jsp에 attribute 3개 있었음. header와 footer는 고정시킬거임 -->
+		<!-- put-attribute : 어떤걸 참고할지 결정 -->
+		<put-attribute name="header" value="/WEB-INF/views/tiles/header.jsp"/>
+		<put-attribute name="footer" value="/WEB-INF/views/tiles/footer.jsp"/>
+	</definition>
+	<!-- 재사용될거면 미완성 상태로 정의를 끝냄. 바로 호출되면 안됨. mainTemplate 이름 복잡하게짓는이유. tiles는 template, extends로 미완성 결정하지 않음-->
+	
+	<!-- 가장 일반적 : 위에 정의된 것을 참고해서 동적으로 들어가는 형태 -->
+	<definition name="*/*" extends="mainTemplate">
+	<!-- extends에 의해 위에꺼를 참조함. 그래서 header, footer생김 -->
+		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
+		<!-- {1} : *첫번째 순서에 대한거 -->
+	</definition>
+	<!-- tiles viewresolver가 얘를 찾아서 동작 원리 : 미완성상태의 template잡는 definition name지을땐 controller가 반환하지 않을만한걸로정함. 컨트롤러가 mainTemplate문자열 반환시 첫번째꺼가 동작됨. 첫번째꺼가 아니여야지 다음 definition 태그로 넘어감. 첫번째꺼는 content가 비어있음. -->
+	
+	<!-- format을 달리하기
+	설정을 추가했다고 동작X tiles는 위에서부터 검색함. controller에서 반환하는 문자열은 emp/empList이런 형식. 2번째 definition만 사용되고 3번째꺼는 무슨일이 있어도 사용안됨
+	definition name="book/*" extends="mainTemplate">
+		put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
+		put-attribute name="footer" value="/WEB-INF/views/tiles/book_footer.jsp"/>
+	/definition> -->
+	
+	<!-- homepage tiles 적용. 얘는 */*밑에 있어도됨. 단, 형태가 o/o면 밑에있으면 안됨 -->
+	<definition name="home" extends="mainTemplate">
+		<put-attribute name="content" value="/WEB-INF/views/home.jsp"></put-attribute>
+		<!-- 동적으로 바뀌는 content에 대해서 정의. 부모꺼에서 다른 footer를 쓰고싶으면 여기서 정의해서 덮어쓸 수 있음 -->
+	</definition>
+</tiles-definitions>

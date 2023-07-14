@@ -24,7 +24,23 @@
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
+		<!-- 1번(tiles)이 못찾으면 기존에 있던 게 동작하도록 만듦 -->
+		<beans:property name="order" value="2"/>
 	</beans:bean>
+	
+	<beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer">
+   		<beans:property name="definitions">
+     		<beans:list>
+       		<beans:value>/WEB-INF/tiles.xml</beans:value>
+     		</beans:list>
+   		</beans:property>
+  	</beans:bean>
+  	
+  	<beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver">
+  		<!-- 타일즈를 적용하고 싶은거라서 얘가 1순위 -->
+  		<beans:property name="order" value="1"/>
+  	</beans:bean>
+	
 	
 	<!-- 빈등록 가장 기본적인 scan. mybatis와 spring scan은 서로 내용을 공유하진 않음. 2개스캔 동작해서 충돌하면 Autowired에서 오류남. 필터걸어서 해결 -->
 	<context:component-scan base-package="com.yedam.app"/>
