@@ -9,7 +9,8 @@
 			   contents,
 			   writer,
 			   regdate,
-			   updatedate
+			   updatedate,
+			   image
 		FROM board
 		ORDER BY bno
 	</select>
@@ -20,19 +21,28 @@
 			   contents,
 			   writer,
 			   regdate,
-			   updatedate
+			   updatedate,
+			   image
 		FROM board
 		WHERE bno = #{bno}
 	</select>
 	
 	<insert id="insertBoard" parameterType="BoardVO">
+	<!-- selectKey는 미리 번호를 보여줘야 할 떄 분리시켜야함 -->
 		<selectKey keyProperty="bno" resultType="int" order="BEFORE">
+		<!-- 문자와 숫자가 섞인 primary key를 만들때 selectkey사용함. 숫자면 시퀀스 쓰는 게 나음 -->
+		<!-- max : primary key는 유니크하게 값을 줘야하는데, 유니크하게 값을 줄 땐 숫자가 가장 쉬움. 1을 더하면 무조건 없는 값이 나와서 -->
+		<!-- NVL : max가 null인 경우가 있어서. 그룹함수(max)는 null에 대해서 생략함. 하지만 해당 테이블에 아무것도 없는 경우에는 max도 줄 수 있는 게 없음. 그러므로 max는 null을 반환함. null값을 반환하는 경우가 해당컬럼에 아무것도 존재하지 않을 때. NVL은 null처리를 하면서 초기값을 줄 수 있음. -->
 			SELECT NVL(MAX(bno), 100) + 1
 			FROM board
+			<!-- 때에 따라서 BD230717001 -> 공지사항, 익명게시판에 따라서 앞에 문자가 붙기도함.날짜별로 리셋되듯이 하면 크기가 고정될 수 있음. primary는 보통 값크기를 고정시켜서 사용함 -->
 		</selectKey>
 		
 		INSERT INTO board
 				(
+					<!-- 등록할 때 모든 컬럼을 하는 지는 테이블의 구조에 따라 달라짐. 테이블 구조가 DEFAULT인 경우. -->
+					<!-- mapper nullable허용 되는지, 제약조건 무엇인지, DEFAULT인지 파악 끝난 후 mapper작성 해야 함 -->
+					<!-- DB -> 해당 나라 기준 DATE, 자바.util.date -> 우리나라랑 안맞음? -->
 					bno
 					, title
 					<if test="contents != null and !contents.equals('')">
@@ -66,30 +76,43 @@
 	
 	</insert>
 	
+	<!-- 수정 -->
+	
 	<update id="updateBoard" parameterType="BoardVO">
 		UPDATE board
 		<set>
 			<if test="title != null and title.equals('')">
-				title = #{title}
+				title = #{title},
 			</if>
-			<if test="contents != null and contents.equals('')">
-				contents = #{contents}
+			<!-- nullable이기때문에 공백 가능함. 공백이 안되면 사용자는 내용을 없애려면 게시글을 아예 삭제해야함 -->
+			<!-- String이지만 공백을 허용하는 부분 -->
+			<if test="contents != null">
+				contents = #{contents},
 			</if>
-			<if test="image != null and image.equals('')">
-				image = #{image}
+			<!-- nullable이기때문에 공백 가능함 -->
+			<if test="image != null">
+				image = #{image},
 			</if>
-			<if test="updateDate == null">
-				updatedate = sysdate
-			</if>
-			<if test="updatedate != null">
-				updatedate = #{updatedate}
-			</if>
+			
+			<choose>
+				<when test="updatedate != null">
+					updatedate = #{updatedate},
+				</when>
+				<otherwise>
+					updatedate = sysdate
+					<!-- default 제약조건은 수정과는 상관없음. default는 insert할 때만 적용됨(insert에서는 컬럼지정X) -->
+				</otherwise>
+			</choose>
+			
 		</set>
 		WHERE bno = #{bno}
 	</update>
 	
+	<!-- 삭제(Where절만 잘 붙이면 됨) -->
+	
 	<delete id="deleteBoard" parameterType="int">
-		DELETE FORM board
+		DELETE FROM board
+		<!-- 매개변수가 하나밖에 없을 땐 이름 달라도 됨 -->
 		WHERE bno = #{bno}
 	
 	</delete>

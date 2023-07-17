@@ -23,6 +23,7 @@
 		<constructor-arg ref="hikariConfig" />
 	</bean>
 	
+	<!-- 자바 외의 파일(설정파일) 분리 추세. 분리 시 mapperLocations써야함 -->
 	<bean class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
 		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>

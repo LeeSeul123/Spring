@@ -10,6 +10,7 @@
 	
 	
 	<definition name="*/*" extends="mainTemplate">
+		<!-- tiles를 적용해야하는 경우, servlet-context가 아니라 얘 중심으로 만들어야 함 -->
 		<put-attribute name="content" value="/WEB-INF/views/{1}/{2}.jsp"/>
 	</definition>
 	

@@ -4,11 +4,15 @@
   "https://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 	<settings>
+		<!-- 자바에서 필드세팅해도 DB와 연결됨. 이걸 추가하면 컬럼의 별칭지을 때 주의해야 할 게, 언더바로 연결해야 뒤에 있는 거 대문자로 읽을 수 있음 -->
 		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<!-- mapUnderscoreToCamelCase : 별칭이든, 컬럼명이든 언더바쓰도록 제한시켜버림 -->
 		<setting name="jdbcTypeForNull" value="NULL"/>
 	</settings>
 	<typeAliases>
+		<!-- 하위 존재하는 모든 존재에 대해 Aliase가 잡힘 -->
 		<package name="com.yedam.web"/>
+		<!-- 얘가 안맞으면 Mapper.xml에서 BoardVO라고 적었을 때 BoardVO를 찾지 못한다고 나옴 -->
 	</typeAliases>
 	<typeHandlers>
 		<typeHandler javaType="java.sql.Date" handler="org.apache.ibatis.type.DateTypeHandler"/>
