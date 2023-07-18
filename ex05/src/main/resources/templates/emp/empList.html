@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>전체 사원 조회</title>
+</head>
+<body>
+	<button type="button" th:onclick="|location.href='@{/empInsert}'|">등록</button>
+	<!-- 등록호출하는 변수 -->
+	<!-- 상대경로. -->
+	<table>
+		<thead>
+			<tr>
+				<th>employee_id</th>
+				<th>first_name</th>
+				<th>job_id</th>
+				<th>hire_date</th>
+			</tr>
+		</thead>
+		<tbody>
+		<!-- tbody안의 tr반복. forEach는 감싸는 태그를 반복. 타임리프는 자체태그가 없어서 태그를 불러와서 덧붙이는 형태 -->
+			<th:block th:each="empInfo : ${empList}">
+			<!-- each는 block을 이용해서 내부 내용을 반복함. html열었을 떄 절대로 보이지 않는 태그->th:block -->
+			<!-- block태그는 태그지만 크게 태그 역할 안함. 그냥 감싸주는 역할만 함. 내부 태그 반복하거나 fragment만듦. 돔에 등록되지 않음 -->
+			<!-- html 내부에 타임리프꺼는 th라고 접두어가 붙음 -->
+			<!-- 콜론 기준 오른쪽은 컨트롤러가 보내온 데이터인 변수. -> EL태그와 거의 같음. 안의 값을 하나씩 꺼내옴 -->
+			<!-- 왼쪽 : 값을 어디에 담을지 정함 -->
+				<tr th:onclick="|location.href='@{/empInfo(employeeId=${empInfo.employeeId})}'|">
+				<!-- http://localhost:8080/empInfo?employeeId=205 -->
+				<!-- 슬러시는 문자. 표현식은 @. \ : 문자열 생성 문법. 아직 thymeleaf적용되지 않은 상태에는 문제가 생겨서 붙임. 절대경로 밑에 empInfo. get방식 ? 사용안하고 ()사용 괄호로 넘어가는 데이터 표기 -->
+				<td th:text="${empInfo.employeeId}"/>
+				<!-- 값을 담아오는 방법 : 1. text기반으로 값을 가져오는 접근방법 -->
+				<td th:text="${empInfo.firstName}"/>
+				<!-- 태그가 가진 속성의 값에 데이터 집어 넣음 -->
+				
+				<!-- 2. td태그 안에 값 집어넣기 -> 템플릿문법사용. 대괄호 두번붙임. 대괄호 안의 문자들은 타임리프의 문법으로 인식하게 됨(내부가 타임리프꺼)-->
+				<td>[[ ${empInfo.jobId} ]]</td>
+				<td>[[ ${#dates.format(empInfo.hireDate, 'yyyy년MM월dd일')} ]]</td>
+				<!-- 내장 객체 dates사용 -->
+				<!-- 스프링 부트(자바프로젝트)실행 : 해당프로젝트 우클릭-> Run As -> Spring Boot App -->
+				<!-- main 메소드 위치하는 클래스에서 java application을 실행시킴 -->
+			</th:block>
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>사원 정보 등록</title>
+</head>
+<body>
+	<form th:action="@{/empInsert}" method="post" th:object="${empVO}">
+		<div>
+			<label id="empId">사원번호</label>
+			<!-- 타임리프가 적용돼야 하는 곳은 th가 접두어로 붙어야 함 -->
+			<input type="text" id="empId" th:field="*{employeeId}">
+			<!-- 객체 선택 표현식. 객체 내부의 특정 필드 선택. empVO지칭 빠지고 필드를 직접적으로 사용할 수 있음 -->
+		</div>
+		<div>
+			<label id="ename">이름</label>
+			<input type="text" id="ename" th:field="*{lastName}">
+			<!-- form 태그에 연결된 객체에 각각 필드로 연결되어있기 때문에 name속성을 사용할 필요가 없어짐. submit하면 이 정보들 담겨서 날아감 -->
+		</div>
+		<div>
+			<label id="empId">이메일</label>
+			<input type="text" id="email" th:field="*{email}">
+		</div>
+		<div>
+			<label id="hireDate">입사일</label>
+			<input type="text" id="hireDate" th:field="*{hireDate}">
+			<!-- 가지고 있는 데이터와 상관없이 정해진 포맷으로 돌아옴 -->
+		</div>
+		<div>
+			<label id="job">업무</label>
+			<input type="text" id="job" th:field="*{jobId}">
+		</div>
+		<div>
+			<button type="submit">등록</button>
+			<button type="reset">취소</button>
+		</div>
+	</form>
+</body>
+</html>
