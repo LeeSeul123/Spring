@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mapper연결 작업 -->
+<mapper namespace="com.yedam.web.emp.mapper.EmpMapper">
+	<!-- 총 데이터 조회 -->
+	<select id="getTotalCount" resultType="int">
+		SELECT count(*)
+		FROM employees
+	</select>
+	
+	<!-- 전체조회. 전체조회는 원래도 order by 필요하지만, 페이징을 쓰면 더더욱 order by가 필요함 -->
+	<!-- 검색 조건 걸 때는 원쿼리문(가장 안쪽 쿼리문)에 걸어야 함 -->
+	<!-- pk는 삭제될 수도 있기 때문에 페이징처리에 사용 안함 -->
+	<select id="selectEmpAll" resultType="EmpVO">
+		SELECT *
+		FROM( SELECT ROWNUM rn, a.*
+			  FROM ( SELECT *
+			         FROM employees
+			         ORDER BY employee_id DESC) a )
+		WHERE rn BETWEEN #{start} AND #{end}
+		<!-- #{start}, #{end} = pagingVO가 가지는 변수 -->
+	</select>
+</mapper>
