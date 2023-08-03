@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-5.2.xsd">
+	<!-- 1. 시큐리티가 적용되지 않을 경로 -->
+	<security:http pattern="/css/**" security="none"/>
+	
+	<!-- 2. 시큐리티가 적용되어야 할 경로 정의 -->
+	<security:http>
+		<!-- 인증안해도 접근 가능 -->
+		<!-- 주의 : 위에서 부터 아래로 검색되기 때문에 *는 맨 마지막에 정의 되어야 한다. filter = 순차적으로 검색됨 -->
+		<security:intercept-url pattern="/top.jsp" access="permitAll()"/>
+		<security:intercept-url pattern="/admin/**" access="hasAuthority('ROLE_ADMIN')"/>
+		<!-- ROLE_ADMIN은 해당 테이블의 ROLE_NAME의 값을 어떻게 넣느냐에 따라 달라질 수 있음 -->
+		<!-- 위의 경로 외의 경로 -->
+		<security:intercept-url pattern="/**" access="isAuthenticated()"/>
+		<!-- **하면 정적인 파일도 포함됨. css도 경로로 접근하기 때문에. css, javascript, 이미지 파일은 인증 여부와 상관없이 접근할 수 있도록 맨위에 빼둔 것 -->
+		<!-- 폼을 이용한 로그인을 세팅 -->
+		<!-- default-target-url: 로그인이 성공했을 때 어디로 갈건지 결정. login-page를 이용해서 변경. -->
+		<security:form-login default-target-url="/top.jsp"/>
+		<!-- 로그아웃을 어떤 경로를 통해서 처리할 건지. 시큐리티가 logout을 처리할 경우 /logout 정보를 삭제하는 것도 해줌 -->
+		<security:logout logout-url="/logout" logout-success-url="/top.jsp"/>
+		<security:csrf disabled="true"/>
+	</security:http>
+	
+	<bean id="userDetailService" class="com.yedam.web.user.service.Impl.CustomUserDetailsService"/>
+	
+	<!-- 3. 아키텍쳐에 있던 부분. 인증과 인가에 대해서 어떻게 처리할것인지 정의 -->
+	<!-- manager, provider = 로그인 처리하는 내용에 대해서 정리. 처리방식 1. 메모리방식(in memory) -> DB와 연결하지 않고 자체적으로 들고 있음. 실제로는 사용하지 않음. 지금 in memory형태 사용 -->
+	
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="userDetailService">
+			<!--  <security:user-service>
+			 user-service는 name, password, authorities(권한은 동시에 여러개 가지는 것도 가능함)를 가짐. 지금은 DB와 연결안하고 가지고 있음 
+				 일시적으로 암호화 하지 않은 비밀번호도 로그인 할 수 있도록 허용 
+				<security:user name="user" password="{noop}1234" authorities="ROLE_USER"/>
+				<security:user name="admin" password="{noop}1234" authorities="ROLE_ADMIN"/>
+			</security:user-service> 
+			< jdbc기반 user-service 
+			  <security:jdbc-user-service data-source-ref="dataSource" users-by-username-query = "select LOGIN_ID, '{noop}' || PASSWORD, 1
+ 																								from T_USER
+																								where LOGIN_ID = ?"
+																	 authorities-by-username-query ="select LOGIN_ID, ROLE_NAME
+ 																									 from T_ROLE
+ 																									inner join T_USER_ROLE on T_ROLE.ID = T_USER_ROLE.ROLE_ID
+ 																									inner join T_USER on T_USER_ROLE.USER_ID = T_USER.ID
+ 																									where LOGIN_ID = ?"/>
+			 mybatis아님. DB 자체의 정보를 핸들링하는 건 dataSource임. mybatis와 트랜잭션manager는 DB를 다루는 기능의 +알파임. mybatis는 datasource를 이용해서 mapper를 통해서만 SQL문 실행시킴. 스프링시큐리티는 mapper없음. 
+				 데이터 소스가 실행시켜야 할 정보 정의 1. user이름 기반으로 id,패스워드 등 처리(인증)  2. 유저가 가진 정보. 한사람당 복수의 권한이 가능해서 따로 처리함. 권한 따로 요구(인가) 인증이 된 사람에 대해서만 인가를 가져온다(순차적으로 일어남.동시에 일어나는 게 아니라) -->
+			
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+</beans>
