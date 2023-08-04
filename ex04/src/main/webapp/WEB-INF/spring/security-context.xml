@@ -22,7 +22,8 @@
 		<security:form-login default-target-url="/top.jsp"/>
 		<!-- 로그아웃을 어떤 경로를 통해서 처리할 건지. 시큐리티가 logout을 처리할 경우 /logout 정보를 삭제하는 것도 해줌 -->
 		<security:logout logout-url="/logout" logout-success-url="/top.jsp"/>
-		<security:csrf disabled="true"/>
+		<!-- false로 해야함 -->
+		<security:csrf disabled="false"/>
 	</security:http>
 	
 	<bean id="userDetailService" class="com.yedam.web.user.service.Impl.CustomUserDetailsService"/>
